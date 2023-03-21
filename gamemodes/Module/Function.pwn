@@ -21,7 +21,7 @@ function OnPlayerDataLoaded(playerid, race_check)
     if (cache_num_rows() > 0)
     {
         cache_get_value_name_int(0, "reg_id", pData[playerid][pID]);
-        cache_get_value_name(0, "Password", pData[playerid][pPassword], 65);
+        cache_get_value_name(0, "password", pData[playerid][pPassword], 65);
         cache_get_value_name(0, "salt", pData[playerid][pSalt], 17);
         cache_get_value_name(0, "ucp", pData[playerid][pUCP], 22);
         cache_get_value_name(0, "temppass", pData[playerid][pTempPass], 64);
@@ -30,7 +30,7 @@ function OnPlayerDataLoaded(playerid, race_check)
         InterpolateCameraPos(playerid, 1330.757080, -1732.019042, 23.432754, 1484.328125, -1716.528442, 23.261428, 20000);
         InterpolateCameraLookAt(playerid, 1335.739990, -1732.224365, 23.073688, 1483.968627, -1721.461547, 23.993165, 19000);
         //---
-        cache_get_value_name(0, "UCP", pData[playerid][pUCP]);
+        cache_get_value_name(0, "ucp", pData[playerid][pUCP]);
         if (pData[playerid][pUCP] > 0)
         {
             format(string, sizeof string, "{FFFFFF}This account is {00FF00}registered!\n\n{FFFFFF}Account: {FFFF00}%s\n{FFFFFF}UCP: {FFFF00}%s\n{FFFFFF}Enter your password below :", GetName(playerid), pData[playerid][pUCP]);
@@ -471,7 +471,7 @@ function WeatherRotator()
     new hours, minutes, second;
     new time = gettime(hours, minutes, second);
     new index = random(sizeof(g_aWeatherRotations));
-    
+
     SetWeather(g_aWeatherRotations[index]);
     SendClientMessageToAllEx(COLOR_LRED, "[BMKG]: Cuaca : %s {FFFFFF}Time: (%02d)", GetWeatherName(index), time);
     // SendClientMessageEx(playerid, -1, "[SYSTEM]: WEATHER %d", g_aWeatherRotations[index]);
@@ -479,9 +479,9 @@ function WeatherRotator()
 
 function SetVehicleToUnfreeze(playerid, vehicleid, Float:x, Float:y, Float:z, Float:a)
 {
-    if(!IsPlayerInRangeOfPoint(playerid, 15.0, x,y,z))
+    if (!IsPlayerInRangeOfPoint(playerid, 15.0, x, y, z))
         return 0;
-    
+
     pData[playerid][pFreeze] = 0;
     SetVehiclePos(vehicleid, x, y, z);
     SetVehicleZAngle(vehicleid, a);

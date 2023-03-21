@@ -43,8 +43,7 @@ enum ddoor
     };
 
 new dData[MAX_DOOR][ddoor],
-    Iterator:
-    Doors<MAX_DOOR>;
+    Iterator:Doors<MAX_DOOR>;
 
 
 // Save Door
@@ -274,7 +273,7 @@ CMD:editdoor(playerid, params[])
     {
         new status;
 
-        if (sscanf(params, "d", status))
+        if (sscanf(string, "d", status))
             return Usage(playerid, "/editdoor [id] [custom] [0/1]");
 
         if (status < 0 || status > 1)
@@ -311,7 +310,7 @@ CMD:editdoor(playerid, params[])
     {
         new pass[32];
 
-        if (sscanf(params, "s[32]", pass))
+        if (sscanf(string, "s[32]", pass))
             return Usage(playerid, "/editdoor [id] [password] [entrance pass] (use 'none' to disable)");
 
         if (!strcmp(pass, "none", true))
@@ -338,7 +337,7 @@ CMD:editdoor(playerid, params[])
             return Error(playerid, "Invalid value. Use 0 for unlocked and 1 for locked");
 
         dData[did][dLocked] = locked;
-        Door_Save(id);
+        Door_Save(did);
         Door_UpdateLabel(did);
 
         if (locked)
@@ -349,6 +348,20 @@ CMD:editdoor(playerid, params[])
         {
             SendAdminMessage(COLOR_RED, "%s has unlocked entrance ID: %d", pData[playerid][pAdminname], did);
         }
+    }
+    else if (!strcmp(type, "name", true))
+    {
+        new name[128];
+
+        if (sscanf(string, "s[128]", name))
+            return Usage(playerid, "/editdoor [id] [name] [new name]");
+
+        format(dData[did][dName], 128, ColouredText(name));
+
+        Door_Save(did);
+        Door_UpdateLabel(did);
+
+        SendAdminMessage(COLOR_RED, "%s has adjusted the name of entrance ID: %d to \"%s\".", pData[playerid][pAdminname], did, ColouredText(name));
     }
     return 1;
 }

@@ -845,12 +845,15 @@ DisplayStats(playerid, p2)
     {
         format(frname, 128, "")
     }*/
+    new Float:x, Float:y, Float:z;
+    GetPlayerPos(playerid, x, y, z);
+
     cache_get_value_name(0, "ucp", pData[p2][pUCP]);
     format(header, sizeof(header), "Stats: "GREEN_E"%s | "WHITE_E"UCP: "AQUA"%s", pData[p2][pName], pData[p2][pUCP]);
     format(gstr, sizeof(gstr), ""RED_E"In Character"WHITE_E"\n");
     format(gstr, sizeof(gstr), "%s{FFFFFF}Gender: [{FFFF00}%s{FFFFFF}] | Money: [{00FF00}$%s{FFFFFF}] | Bank: [{00FF00}%s{FFFFFF}] | Rekening Bank: [{C6E2FF}%d{FFFFFF}] | Phone Number: [{C6E2FF}%d{FFFFFF}]\n", gstr, (pData[p2][pGender] == 2) ? ("Female") : ("Male"), FormatMoney(pData[p2][pMoney]), FormatMoney(pData[p2][pBankMoney]), pData[p2][pBankRek], pData[p2][pPhone]);
     format(gstr, sizeof(gstr), "%sBirthdate: [{FFFF00}%s{FFFFFF}] | Job: [{C6E2FF}%s{FFFFFF}] | Job2: [{C6E2FF}%s{FFFFFF}] | [{C6E2FF}%s{FFFFFF}] | Family: [%s]\n", gstr, pData[p2][pAge], GetJobName(pData[p2][pJob]), GetJobName(pData[p2][pJob2]), fac, fname, frname);
-    format(gstr, sizeof(gstr), "%sCharacter Story: [%s{FFFFFF}] | Health: [%f{FFFFFF}] | X: [{C6E2FF}%f{FFFFFF}]", gstr, GetPlayerCharacterStory(p2), pData[p2][pHealth], pData[p2][pPosX]);
+    format(gstr, sizeof(gstr), "%sCharacter Story: [%s{FFFFFF}] | Health: [%f{FFFFFF}] | X: [{C6E2FF}%f:%f:%f{FFFFFF}]\n\n", gstr, GetPlayerCharacterStory(p2), pData[p2][pHealth], x,);
     format(gstr, sizeof(gstr), "%s"RED_E"Out of Character"WHITE_E"\n", gstr);
     format(gstr, sizeof(gstr), "%sLevel Score: [{FF0000}%d/%d{FFFFFF}] | Email: [{FFFF00}%s{FFFFFF}] | Warning: [{FF0000}%d/20{FFFFFF}] | Last Login: [{FF0000}%s{FFFFFF}]\n", gstr, pData[p2][pLevelUp], scoremath, pData[p2][pEmail], pData[p2][pWarn], pData[p2][pLastLogin]);
     format(gstr, sizeof(gstr), "%sStaff: [%s{FFFFFF}] | Time Played: [{FFFF00}%d hours(s) %d minutes(s) %02d second(s){FFFFFF}] | Gold Coin: [{FFFF00}$%d{FFFFFF}]\n", gstr, GetStaffRank(p2), pData[p2][pHours], pData[p2][pMinutes], pData[p2][pSeconds], pData[p2][pGold]);
@@ -1006,6 +1009,10 @@ GetWeatherName(weatherid)
     {
         cuaca = "{25CED1}EXTRASUNNY_COUNTRYSIDE";
     }
+    else if (weatherid == 14)
+    {
+        cuaca = "{25CED1}SUNNY_COUNTRYSIDE";
+    }
     else
     {
         cuaca = "{FFFFFF}null";
@@ -1063,4 +1070,30 @@ SendAdminMessage(color, const str[], {Float, _} : ...)
         }
     }
     return 1;
+}
+
+ColouredText(text[])
+{
+    new pos = -1, string[144];
+
+    strmid(string, text, 0, 128, (sizeof(string) - 16));
+
+    while ((pos = strfind(string, "#", true, (pos + 1))) != -1)
+    {
+        new i = (pos + 1), hexCount;
+
+        for (; ((string[i] != 0) && (hexCount < 6)); ++i, ++hexCount)
+        {
+            if (!('a' <= string[i] <= 'f') || ('A' <= string[i] <= 'F') || ('0' <= string[i] <= '9'))
+            {
+                break;
+            }
+        }
+        if ((hexCount == 6) && !(hexCount < 6))
+        {
+            string[pos] = '{};
+                          strins(string, "}", i);
+        }
+    }
+    return string;
 }

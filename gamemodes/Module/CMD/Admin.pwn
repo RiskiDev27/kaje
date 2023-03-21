@@ -493,8 +493,9 @@ CMD:beta(playerid, params[])
     format(str, sizeof(str), "ahelp\tshow all command\n");
     format(str, sizeof(str), "%s{25CED1}aduty\t{FFFFFF}on duty admin\n", str);
     format(str, sizeof(str), "%s{25CED1}setadminname\t{FFFFFF}change admin name\n", str);
-    format(str, sizeof(str), "%s{25CED1}restart\t{FFFFFF}Restart Server", str);
+    format(str, sizeof(str), "%s{25CED1}restart\t{FFFFFF}Restart Server\n", str);
     format(str, sizeof(str), "%s{25CED1}cokbadai\t{FFFFF}Maintenance server", str);
+    format(str, sizeof(str), "%s{25CED1}adminjail\t{FFFFFF}Show Player Jail(OOC)\n", str);
     ShowPlayerDialog(playerid, DIALOG_UNUSED, DIALOG_STYLE_TABLIST_HEADERS, "ADMIN COMMAND", str, "Ok", "Exit");
 
     return 1;
