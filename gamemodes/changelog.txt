@@ -1,0 +1,42 @@
+
+
+
+
+
+
+
+
+
+Changelog v.1.0 (Admnistrator system) | [BETA]
+Add:
+--> [+]CMD cokbadai (high admin)
+--> [+]CMD jail (admin)
+--> [+]CMD ban (test)
+--> [+]CMD report (player) [done]
+--> [+]CMD reply (admin)
+--> [+]CMD gotocord (admin)>OK
+--> [+]CMD jetpack (admin)>OK
+--> [+]CMD cars (admin)>OK
+Note: Administrator 50% Done. Next Goverment Faction|
+----------------------------------------------------------->
+***Changelog v.1.4 (Gov) | BETA***
+```
+Add:
+    [+] Mapping Exterior City Hall 
+    [+] Add CMD sethealth (admin only)
+    [+] Add CMD setgold (Admin only)
+    [+] Add CMD stats
+    [+] Add CMD enter
+    [+] Add CMD createdoor (Admin only)
+    [+] Add CMD editdoor (Admin only)
+    [+] Add CMD gotodoor (Admin only)
+
+Fix:
+    [!] Fix Function WeatherRotator
+    [!] Fix Format Money System
+    [!] Fix WeatherRotator (revisi name)
+
+Remove:
+    [-] Remove string (>>) on cmd ann
+```
+***Note: Tester. ***

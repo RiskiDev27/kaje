@@ -1,0 +1,19 @@
+
+
+
+
+
+
+
+Note Revisi v.1.3 (Gov)
+- Fix Format Money System
+- Fix Function Weather Rotator
+- Adjust Stats System
+- Add CMD sethealth (admin only)
+- Remove text (>>) [CMD ann]
+- Add Mappingan City Hall
+========================================
+Note Revisi v.1.4 (Gov)
+- Adjust stats System
+- Add Door System
+- etc.
