@@ -411,5 +411,28 @@ CMD:editdoor(playerid, params[])
 
         SendAdminMessage(COLOR_RED, "%s has set entrance ID: %d to family id %d", pData[playerid][pAdminname], did, fid);
     }
+    else if (type, "garage", true)
+    {
+        new gid;
+
+        if (sscanf(string, "d", gid))
+            return Usage(playerid, "/editdoor [id] [garage] [0 - 1]");
+
+        if (gid < 0 || gid > 1)
+            return Error(playerid, "Invalid value! Use 0 to disable. 1 to enable");
+
+        if (gid == 0)
+        {
+            dData[did][dGarage] = 0;
+            SendAdminMessage(COLOR_RED, "%s has set entrance ID: %d to garage vehicle disable", pData[playerid][pAdminname], did);
+        }
+        else
+        {
+            dData[did][dGarage] = 1;
+            SendAdminMessage(COLOR_RED, "%s has set entrance ID: %d to garage vehicle enable", pData[playerid][pAdminname], did);
+        }
+        Door_Save(did);
+        Door_UpdateLabel(did);
+    }
     return 1;
 }

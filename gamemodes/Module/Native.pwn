@@ -1023,6 +1023,10 @@ GetWeatherName(weatherid)
     {
         cuaca = "{25CED1}EXTRASUNNY_DESERT";
     }
+    else if (weatherid == 18)
+    {
+        cuaca = "{25CED1}SUNNY_DESSERT";
+    }
     else
     {
         cuaca = "{FFFFFF}null";

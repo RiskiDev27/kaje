@@ -279,7 +279,7 @@ CMD:veh(playerid, params[])
     if (sscanf(params, "s[32]I(-1)I(-1)", model, color1, color2))
     {
         Usage(playerid, "/cars [model ID/name cars] [Color First] [Color Second]");
-        SendClientMessage(playerid, -1, "SULTAN | REMINGTON | FELTSET | Cabbie | ETC");
+        SendClientMessage(playerid, -1, "SULTAN | REMINGTON | FELTSET | Cabbie | CADDY | ETC");
         return 1;
     }
 
@@ -564,6 +564,7 @@ CMD:ahelp(playerid, params[])
     format(str, sizeof(str), "%s{25CED1}jail\t{FFFFFF}Jail Player(OOC)\n", str);
     format(str, sizeof(str), "%s{25CED1}unjail\t{FFFFFF}Release Jail Player(OOC)\n", str);
     format(str, sizeof(str), "%s{25CED1}gotocord\tTeleport to coordinat\n", str);
+    format(str, sizeof(str), "%s[24CED1}jetpack\tSpawn Jetpack\n", str);
     ShowPlayerDialog(playerid, DIALOG_UNUSED, DIALOG_STYLE_TABLIST_HEADERS, "ADMIN COMMAND", str, "Ok", "Exit");
 
     return 1;
