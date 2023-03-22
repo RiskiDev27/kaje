@@ -379,5 +379,21 @@ CMD:editdoor(playerid, params[])
 
         SendAdminMessage(COLOR_RED, "%s has set entrance ID: %d to VIP level: %d", pData[playerid][pAdminname], did, level);
     }
+    else if (!strcmp(type, "faction", true))
+    {
+        new fid;
+
+        if (sscanf(string, "d", fid))
+            return usage(playerid, "/editdoor [id] [faction] [faction id]");
+
+        if (fid < 0 || fid > 4)
+            return Error(playerid, "Invalid value | Use 0 - 4 for type");
+
+        dData[did][dFaction] = fid;
+        Door_Save(did);
+        Door_UpdateLabel(did);
+
+        SendAdminMessage(COLOR_RED, "%s has set entrance ID: %d to faction id %d", pData[playerid][pAdminname], did, fid);
+    }
     return 1;
 }

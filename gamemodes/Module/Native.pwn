@@ -851,7 +851,7 @@ DisplayStats(playerid, p2)
     format(gstr, sizeof(gstr), ""RED_E"In Character"WHITE_E"\n");
     format(gstr, sizeof(gstr), "%s{FFFFFF}Gender: [{FFFF00}%s{FFFFFF}] | Money: [{00FF00}$%s{FFFFFF}] | Bank: [{00FF00}%s{FFFFFF}] | Rekening Bank: [{C6E2FF}%d{FFFFFF}] | Phone Number: [{C6E2FF}%d{FFFFFF}]\n", gstr, (pData[p2][pGender] == 2) ? ("Female") : ("Male"), FormatMoney(pData[p2][pMoney]), FormatMoney(pData[p2][pBankMoney]), pData[p2][pBankRek], pData[p2][pPhone]);
     format(gstr, sizeof(gstr), "%sBirthdate: [{FFFF00}%s{FFFFFF}] | Job: [{C6E2FF}%s{FFFFFF}] | Job2: [{C6E2FF}%s{FFFFFF}] | [{C6E2FF}%s{FFFFFF}] | Family: [%s]\n", gstr, pData[p2][pAge], GetJobName(pData[p2][pJob]), GetJobName(pData[p2][pJob2]), fac, fname, frname);
-    format(gstr, sizeof(gstr), "%sCharacter Story: [%s{FFFFFF}] | Health: [%f{FFFFFF}]\n\n", gstr, GetPlayerCharacterStory(p2), pData[p2][pHealth], x);
+    format(gstr, sizeof(gstr), "%sCharacter Story: [%s{FFFFFF}] | Health: [%f{FFFFFF}]\n\n", gstr, GetPlayerCharacterStory(p2), pData[p2][pHealth]);
     format(gstr, sizeof(gstr), "%s"RED_E"Out of Character"WHITE_E"\n", gstr);
     format(gstr, sizeof(gstr), "%sLevel Score: [{FF0000}%d/%d{FFFFFF}] | Email: [{FFFF00}%s{FFFFFF}] | Warning: [{FF0000}%d/20{FFFFFF}] | Last Login: [{FF0000}%s{FFFFFF}]\n", gstr, pData[p2][pLevelUp], scoremath, pData[p2][pEmail], pData[p2][pWarn], pData[p2][pLastLogin]);
     format(gstr, sizeof(gstr), "%sStaff: [%s{FFFFFF}] | Time Played: [{FFFF00}%d hours(s) %d minutes(s) %02d second(s){FFFFFF}] | Gold Coin: [{FFFF00}$%d{FFFFFF}]\n", gstr, GetStaffRank(p2), pData[p2][pHours], pData[p2][pMinutes], pData[p2][pSeconds], pData[p2][pGold]);
@@ -1014,6 +1014,10 @@ GetWeatherName(weatherid)
     else if (weatherid == 15)
     {
         cuaca = "{25CED1}CLOUDY_COUNTRYSIDE";
+    }
+    else if (weatherid == 16)
+    {
+        cuaca = "{25CED1}RAINY_COUNTRYSIDE";
     }
     else
     {

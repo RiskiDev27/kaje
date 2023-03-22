@@ -30,6 +30,9 @@ Add:
     [+] Add CMD createdoor (Admin only)
     [+] Add CMD editdoor (Admin only)
     [+] Add CMD gotodoor (Admin only)
+    [+] Add CMD cord (Admin only)
+    [+] Add CMD ahelp (Admin only)
+    [+] Add CMD setvip (Admin only)
 
 Fix:
     [!] Fix Function WeatherRotator

@@ -276,7 +276,13 @@ CMD:veh(playerid, params[])
 
     new string[300];
 
-    if (sscanf(params, "s[32]I(-1)I(-1)", model, color1, color2)) return Usage(playerid, "/cars [model ID/name cars] [Color First] [Color Second]");
+    if (sscanf(params, "s[32]I(-1)I(-1)", model, color1, color2))
+    {
+        return Usage(playerid, "/cars [model ID/name cars] [Color First] [Color Second]");
+        SendClientMessage(playerid, -1, "SULTAN | REMINGTON | FELTSET | BUS | ETC");
+        return 1;
+    }
+
 
     if ((model[0] = GetVehicleModelByName(model)) == 0)
         return Error(playerid, "Invalid model ID!");
@@ -496,6 +502,54 @@ CMD:cord(playerid, params[])
     SendClientMessageEx(playerid, COLOR_WHITE, "Lokasi Anda Saat ini: %s (%0.2f, %0.2f, %0.2f, %0.2f) int = %d", zone, px, py, pz, a, int);
     return 1;
 }
+
+CMD:setvip(playerid, params[])
+{
+    if (pData[playerid][pAdmin] < 4)
+        return PermissionError(playerid);
+
+    new alevel, dayz, otherid, tmp[64];
+    if (sscanf(params, "udd", otherid, alevel, dayz))
+    {
+        Usage(playerid, "/setvip [ID/Name] [level 0 - 3] [time (in days) 0 for permanent]");
+        return 1;
+    }
+
+    if (!IsPlayerConnected(otherid))
+        return Error(playerid, "Player Not Connected!");
+    if (alevel > 3)
+        return Error(playerid, "Level can't be higher than 3!");
+    if (alevel < 0)
+        return Error(playerid, "Level can't be lower than 0!");
+    if (dayz < 0)
+        return Error(playerid, "Time can't bew lower than 0!");
+
+    if (pData[otherid][IsLoggedIn] == false)
+    {
+        Error(playerid, "Player %s(%i) isn't logged in!", pData[otherid][pName], otherid);
+        return 1;
+    }
+
+    if (pData[playerid][pAdmin] < 5 && dayz > 7)
+        return Error(playerid, "Anda hanya bisa menset 1 - 7 hari");
+
+    pData[otherid][pVip] = alevel;
+    if (dayz == 0)
+    {
+        pData[otherid][pVipTime] = 0;
+        SendAdminMessage(COLOR_RED, "Server: "GREY2_E"Admin %s(%d) telah menset VIP kepada %s(%d) ke level %s permanent time!", pData[playerid][pAdminname], playerid, pData[otherid][pName], otherid, GetVipRank(otherid));
+
+    }
+    else
+    {
+        pData[otherid][pVipTime] = gettime() + (days * 86400);
+        SendAdminMessage(COLOR_RED, "Server: "GREY2_E"ADMIN %s(%d) telah menset VIP keapda %s(%d) selama %d hari ke level %s!", pData[playerid][pAdminname], playerid, pData[otherid][pName], otherid, dayz, GetVipRank(otherid));
+    }
+
+    format(tmp, sizeof(tmp), "%d(%d days)", alevel, dayz);
+    StaffCommandLog("SETVIP", playerid, otherid, tmp);
+    return 1;
+}
 CMD:ahelp(playerid, params[])
 {
     if (!pData[playerid][pAdmin] == 6)
@@ -505,9 +559,10 @@ CMD:ahelp(playerid, params[])
     format(str, sizeof(str), "%s{25CED1}aduty\t{FFFFFF}on duty admin\n", str);
     format(str, sizeof(str), "%s{25CED1}setadminname\t{FFFFFF}change admin name\n", str);
     format(str, sizeof(str), "%s{25CED1}restart\t{FFFFFF}Restart Server\n", str);
-    format(str, sizeof(str), "%s{25CED1}cokbadai\t{FFFFF}Maintenance server\n", str);
+    format(str, sizeof(str), "%s{25CED1}cokbadai\t{FFFFFF}Maintenance server\n", str);
     format(str, sizeof(str), "%s{25CED1}adminjail\t{FFFFFF}Show Player Jail(OOC)\n", str);
-    format(str, sizeof(str), "%s{25CED1}jail\t{FFFFF}Jail Player(OOC)\n", str);
+    format(str, sizeof(str), "%s{25CED1}jail\t{FFFFFF}Jail Player(OOC)\n", str);
+    format(str, sizeof(str), "%s{25CED1}unjail\t{FFFFFF}Release Jail Player(OOC)\n", str);
     ShowPlayerDialog(playerid, DIALOG_UNUSED, DIALOG_STYLE_TABLIST_HEADERS, "ADMIN COMMAND", str, "Ok", "Exit");
 
     return 1;
