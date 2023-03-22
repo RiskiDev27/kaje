@@ -384,7 +384,7 @@ CMD:editdoor(playerid, params[])
         new fid;
 
         if (sscanf(string, "d", fid))
-            return usage(playerid, "/editdoor [id] [faction] [faction id]");
+            return Usage(playerid, "/editdoor [id] [faction] [faction id]");
 
         if (fid < 0 || fid > 4)
             return Error(playerid, "Invalid value | Use 0 - 4 for type");
@@ -394,6 +394,22 @@ CMD:editdoor(playerid, params[])
         Door_UpdateLabel(did);
 
         SendAdminMessage(COLOR_RED, "%s has set entrance ID: %d to faction id %d", pData[playerid][pAdminname], did, fid);
+    }
+    else if (!strcmp(type, "family", true))
+    {
+        new fid;
+
+        if (sscanf(string, "d", fid))
+            return Usage(playerid, "/editdoor [id] [family] [family id]");
+
+        if (fid < -1 || fid > 9)
+            return Error(playerid, "Invalid value. Use -1 to 9 for family id");
+
+        dData[did][dFamily] = fid;
+        Door_Save(did);
+        Door_UpdateLabel(did);
+
+        SendAdminMessage(COLOR_RED, "%s has set entrance ID: %d to family id %d", pData[playerid][pAdminname], did, fid);
     }
     return 1;
 }

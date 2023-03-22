@@ -278,8 +278,8 @@ CMD:veh(playerid, params[])
 
     if (sscanf(params, "s[32]I(-1)I(-1)", model, color1, color2))
     {
-        return Usage(playerid, "/cars [model ID/name cars] [Color First] [Color Second]");
-        SendClientMessage(playerid, -1, "SULTAN | REMINGTON | FELTSET | BUS | ETC");
+        Usage(playerid, "/cars [model ID/name cars] [Color First] [Color Second]");
+        SendClientMessage(playerid, -1, "SULTAN | REMINGTON | FELTSET | Cabbie | ETC");
         return 1;
     }
 
@@ -542,7 +542,7 @@ CMD:setvip(playerid, params[])
     }
     else
     {
-        pData[otherid][pVipTime] = gettime() + (days * 86400);
+        pData[otherid][pVipTime] = gettime() + (dayz * 86400);
         SendAdminMessage(COLOR_RED, "Server: "GREY2_E"ADMIN %s(%d) telah menset VIP keapda %s(%d) selama %d hari ke level %s!", pData[playerid][pAdminname], playerid, pData[otherid][pName], otherid, dayz, GetVipRank(otherid));
     }
 
@@ -554,7 +554,7 @@ CMD:ahelp(playerid, params[])
 {
     if (!pData[playerid][pAdmin] == 6)
         return PermissionError(playerid);
-    new str[257];
+    new str[2000];
     format(str, sizeof(str), "ahelp\tshow all command\n");
     format(str, sizeof(str), "%s{25CED1}aduty\t{FFFFFF}on duty admin\n", str);
     format(str, sizeof(str), "%s{25CED1}setadminname\t{FFFFFF}change admin name\n", str);
@@ -563,6 +563,7 @@ CMD:ahelp(playerid, params[])
     format(str, sizeof(str), "%s{25CED1}adminjail\t{FFFFFF}Show Player Jail(OOC)\n", str);
     format(str, sizeof(str), "%s{25CED1}jail\t{FFFFFF}Jail Player(OOC)\n", str);
     format(str, sizeof(str), "%s{25CED1}unjail\t{FFFFFF}Release Jail Player(OOC)\n", str);
+    format(str, sizeof(str), "%s{25CED1}gotocord\tTeleport to coordinat\n", str);
     ShowPlayerDialog(playerid, DIALOG_UNUSED, DIALOG_STYLE_TABLIST_HEADERS, "ADMIN COMMAND", str, "Ok", "Exit");
 
     return 1;
