@@ -363,5 +363,21 @@ CMD:editdoor(playerid, params[])
 
         SendAdminMessage(COLOR_RED, "%s has adjusted the name of entrance ID: %d to \"%s\".", pData[playerid][pAdminname], did, ColouredText(name));
     }
+    else if (!strcmp(type, "vip", true))
+    {
+        new level;
+
+        if (sscanf(string, "d", level))
+            return Usage(playerid, "/editdoor [id] [VIP] [level]");
+
+        if (level  < 0 || level > 3)
+            return Error(playerid, "Invalid value. Use 0 - 3 for level");
+
+        dData[did][dVip] = level;
+        Door_Save(did);
+        Door_UpdateLabel(did);
+
+        SendAdminMessage(COLOR_RED, "%s has set entrance ID: %d to VIP level: %d", pData[playerid][pAdminname], did, level);
+    }
     return 1;
 }

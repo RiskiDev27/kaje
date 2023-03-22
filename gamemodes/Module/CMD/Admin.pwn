@@ -485,7 +485,18 @@ CMD:setgold(playerid, params[])
     return 1;
 }
 
-CMD:beta(playerid, params[])
+CMD:cord(playerid, params[])
+{
+    new int, Float:px, Float:py, Float:pz, Float:a;
+    GetPlayerPos(playerid, px, py, pz);
+    GetPlayerFacingAngle(playerid, a);
+    int = GetPlayerInterior(playerid);
+    new zone [MAX_ZONE_NAME];
+    GetPlayer3DZone(playerid, zone, sizeof(zone));
+    SendClientMessageEx(playerid, COLOR_WHITE, "Lokasi Anda Saat ini: %s (%0.2f, %0.2f, %0.2f, %0.2f) int = %d", zone, px, py, pz, a, int);
+    return 1;
+}
+CMD:ahelp(playerid, params[])
 {
     if (!pData[playerid][pAdmin] == 6)
         return PermissionError(playerid);
@@ -494,8 +505,9 @@ CMD:beta(playerid, params[])
     format(str, sizeof(str), "%s{25CED1}aduty\t{FFFFFF}on duty admin\n", str);
     format(str, sizeof(str), "%s{25CED1}setadminname\t{FFFFFF}change admin name\n", str);
     format(str, sizeof(str), "%s{25CED1}restart\t{FFFFFF}Restart Server\n", str);
-    format(str, sizeof(str), "%s{25CED1}cokbadai\t{FFFFF}Maintenance server", str);
+    format(str, sizeof(str), "%s{25CED1}cokbadai\t{FFFFF}Maintenance server\n", str);
     format(str, sizeof(str), "%s{25CED1}adminjail\t{FFFFFF}Show Player Jail(OOC)\n", str);
+    format(str, sizeof(str), "%s{25CED1}jail\t{FFFFF}Jail Player(OOC)\n", str);
     ShowPlayerDialog(playerid, DIALOG_UNUSED, DIALOG_STYLE_TABLIST_HEADERS, "ADMIN COMMAND", str, "Ok", "Exit");
 
     return 1;
