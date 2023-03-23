@@ -434,5 +434,47 @@ CMD:editdoor(playerid, params[])
         Door_Save(did);
         Door_UpdateLabel(did);
     }
+    else if (type, "delete", true)
+    {
+        DestroyDynamic3DTextLabel(dData[did][dLabelExt]);
+        DestroyDynamicPickup(dData[did][dPickupExt]);
+        DestroyDynamic3DTextLabel(dData[did][dLabelInt]);
+        DestroyDynamicPickup(dData[did][dPickupInt]);
+        DestroyDynamicCP(dData[dCP]);
+
+        dData[did][dExtPosX] = 0;
+        dData[did][dExtPosY] = 0;
+        dData[did][dExtPosZ] = 0;
+        dData[did][dExtPosA] = 0;
+        dData[did][dExtvw] = 0;
+        dData[did][dExtInt] = 0;
+        dData[did][dIntPosX] = 0;
+        dData[did][dIntPosY] = 0;
+        dData[did][dIntPosZ] = 0;
+        dData[did][dIntPosA] = 0;
+        dData[did][dIntvw] = 0;
+        dData[did][dInt] = 0;
+        format(dData[did][dPass], 32, "");
+        dData[did][dIcon] = 0;
+        dData[did][dLocked] = 0;
+        dData[did][dAdmin] = 0;
+        dData[did][dVip] = 0;
+        dData[did][dFaction] = 0;
+        dData[did][dFamily] = -1;
+        pData[did][dGarage] = 0;
+        dData[did][dCustom] = 0;
+dData[did][dLabelExt] = Text3D:
+                                INVALID_3DTEXT_ID;
+dData[did][dLabelInt] = Text3D:
+                                INVALID_3DTEXT_ID;
+        dData[did][dPickupExt] = -1;
+        dData[did][dPickupInt] = -1;
+
+        Iter_Remove(Doors, did);
+        new query[128];
+        mysql_format(g_SQL, query, sizeof(query), "DELETE FROM `doors` WHERE `ID` = '%d'", did);
+        mysql_tquery(g_SQL, query);
+        SendAdminMessage(COLOR_RED, "%s has delete door ID: %d", pData[playerid][pAdmin], did);
+    }
     return 1;
 }
