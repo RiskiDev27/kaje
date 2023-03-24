@@ -566,6 +566,7 @@ CMD:ahelp(playerid, params[])
     format(str, sizeof(str), "%s{25CED1}gotocord\tTeleport to coordinat\n", str);
     format(str, sizeof(str), "%s{24CED1}jetpack\tSpawn Jetpack\n", str);
     format(str, sizeof(str), "%s{25CED1}veh\tSpawn Vehicle Static\n", str);
+    format(str, sizeof(str), "%s{25CED1}setfaction\tSet Player Faction\n", str);
     ShowPlayerDialog(playerid, DIALOG_UNUSED, DIALOG_STYLE_TABLIST_HEADERS, "ADMIN COMMAND", str, "Ok", "Exit");
 
     return 1;

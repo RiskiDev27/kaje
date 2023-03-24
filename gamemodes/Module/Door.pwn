@@ -236,7 +236,7 @@ CMD:editdoor(playerid, params[])
     if (sscanf(params, "ds[24]S()[128]", did, type, string))
     {
         Usage(playerid, "/editdoor [id] [name]");
-        SendClientMessage(playerid, COLOR_YELLOW, "[NAMES]:{FFFFFF} location, interior, password, name, locked , admin, VIP, faction, family, custom, virtual");
+        SendClientMessage(playerid, COLOR_YELLOW, "[NAMES]:{FFFFFF} location, interior, password, name, locked , admin, VIP, faction, family, custom, virtual delete");
         return 1;
     }
 
@@ -434,7 +434,7 @@ CMD:editdoor(playerid, params[])
         Door_Save(did);
         Door_UpdateLabel(did);
     }
-    else if (type, "delete", true)
+    else if (!strcmp(type, "delete", true))
     {
         DestroyDynamic3DTextLabel(dData[did][dLabelExt]);
         DestroyDynamicPickup(dData[did][dPickupExt]);
@@ -463,10 +463,8 @@ CMD:editdoor(playerid, params[])
         dData[did][dFamily] = -1;
         pData[did][dGarage] = 0;
         dData[did][dCustom] = 0;
-dData[did][dLabelExt] = Text3D:
-                                INVALID_3DTEXT_ID;
-dData[did][dLabelInt] = Text3D:
-                                INVALID_3DTEXT_ID;
+        dData[did][dLabelExt] = Text3D:INVALID_3DTEXT_ID;
+        dData[did][dLabelInt] = Text3D:INVALID_3DTEXT_ID;
         dData[did][dPickupExt] = -1;
         dData[did][dPickupInt] = -1;
 
