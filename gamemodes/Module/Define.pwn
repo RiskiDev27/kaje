@@ -34,5 +34,5 @@ const BAN_MASK = (-1 << (32 - (/*this is the CIDR ip detection range [def: 26]*/
 #define 	DEFAULT_POS_Z 		13.8526
 #define 	DEFAULT_POS_A 		274.251
 
-#define TEXT_GAMEMODE "JP:RP v.1.3 (Gov)"
+#define TEXT_GAMEMODE "JP:RP v.1.4 (ENTRANCE)"
 #define SERVER_NAME   "Jateng Pride Roleplay"

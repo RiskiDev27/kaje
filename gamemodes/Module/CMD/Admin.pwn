@@ -279,7 +279,7 @@ CMD:veh(playerid, params[])
     if (sscanf(params, "s[32]I(-1)I(-1)", model, color1, color2))
     {
         Usage(playerid, "/cars [model ID/name cars] [Color First] [Color Second]");
-        SendClientMessage(playerid, -1, "SULTAN | REMINGTON | FELTSET | Cabbie | CADDY | ETC");
+        SendClientMessage(playerid, -1, "SULTAN | REMINGTON | FELTSET | Cabbie | CADDY | BUCCANEE | PETRO | ETC");
         return 1;
     }
 
@@ -567,6 +567,8 @@ CMD:ahelp(playerid, params[])
     format(str, sizeof(str), "%s{24CED1}jetpack\tSpawn Jetpack\n", str);
     format(str, sizeof(str), "%s{25CED1}veh\tSpawn Vehicle Static\n", str);
     format(str, sizeof(str), "%s{25CED1}setfaction\tSet Player Faction\n", str);
+    format(str, sizeof(str), "%s{25CED1}setleader\nSet Leader Player Faction\n", str);
+    format(str, sizeof(str), "%s{25CED1}ann\nAnnouncement Text\n", str);
     ShowPlayerDialog(playerid, DIALOG_UNUSED, DIALOG_STYLE_TABLIST_HEADERS, "ADMIN COMMAND", str, "Ok", "Exit");
 
     return 1;

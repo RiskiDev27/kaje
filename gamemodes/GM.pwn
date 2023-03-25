@@ -30,7 +30,7 @@
 #include <garageblock.inc>
 #include <timerfix.inc>
 // #include <discord-cmd>
-// #include <discord-connector.inc>
+#include <discord-connector.inc>
 // #include <sampvoice>
 #include <anti-cheat>
 #include "../include/gl_common.inc"
@@ -807,14 +807,17 @@ new g_ServerBadai;
 new g_RestartTime;
 new g_BadaiTime;
 new WorldWeather = 24;
-stock const g_aWeatherRotations[] = {
+stock const g_aWeatherRotations[] =
+{
     14, 1, 7, 3, 5, 12, 9, 8, 15
 };
 
+// DISCORD BOT
+new DCC_Channel:g_discord_server;
 main()
 {
     print("Test Script");
-    // 
+    //
     SetTimer("WeatherRotator", 400000, true);
     // SetTimerEx("WeatherRotator",300000, true, "d", playerid);
 }
@@ -831,7 +834,8 @@ main()
 
 public OnGameModeInit()
 {
-    new MySQLOpt: option_id = mysql_init_options();
+new MySQLOpt:
+    option_id = mysql_init_options();
 
     mysql_set_option(option_id, AUTO_RECONNECT, true);
 
@@ -845,7 +849,7 @@ public OnGameModeInit()
     print("MySQL connection is successful.");
 
     mysql_tquery(g_SQL, "SELECT * FROM `doors`", "LoadDoors");
-    
+
     SpawnMale = LoadModelSelectionMenu("spawnmale.txt");
     SpawnFemale = LoadModelSelectionMenu("spawnfemale.txt");
 
@@ -855,11 +859,35 @@ public OnGameModeInit()
     new rcon[50];
     format(rcon, sizeof(rcon), "hostname %s", SERVER_NAME);
     SendRconCommand(rcon);
-    
+
     EnableStuntBonusForAll(0);
     DisableInteriorEnterExits();
     WeatherRotator();
     print("Gamemode Ready to Play!");
+
+    g_discord_server = DCC_FindChannelById("1089051513671917598");
+
+    printf("[Object] >>  Number of Dynamic object loaded: %d", CountDynamicObjects());
+    new DCC_Channel:channel, DCC_Embed:logss;
+    new y, m, d, timestamp[200];
+    getdate(y, m, d);
+    channel = DCC_FindChannelById("1088678869390856203"); //
+    format(timestamp, sizeof(timestamp), "%02i%02i%02i", y, m, d);
+    logss = DCC_CreateEmbed("Jateng Pride Roleplay");
+    DCC_SetEmbedTitle(logss, "JATENG PRIDE");
+    DCC_SetEmbedTimestamp(logss, timestamp);
+    DCC_SetEmbedFooter(logss, "JATENG PRIDE ROLEPLAY", "");
+    new string1[5000];
+    format(string1, sizeof(string1), "Server Kembali mengudara @everyone");
+    DCC_AddEmbedField(logss, "Server Status", string1, true);
+    DCC_SendChannelEmbedMessage(channel, logss);
+    DCC_SetEmbedColor(logss, 0x99D5C9);
+
+    for (new i = 0; i < MAX_PLAYERS; i++)
+    {
+        if (!IsPlayerConnected(i)) continue;
+        OnPlayerConnect(i);
+    }
     return 1;
 }
 
@@ -876,6 +904,22 @@ public OnGameModeExit()
     printf("[Database] User Saved: %d", user);
     print("------------------[Auto Restart]--------------");
     SendClientMessageToAll(COLOR_RED, "{FFFFFF}[!]{FFFF00}Server is Maintenance/Restart.{00FFFF} >> RISKI BOTS");
+
+    mysql_close(g_SQL);
+    new DCC_Channel:channel, DCC_Embed:loll;
+    new y, m, d, timestamp[200];
+    getdate(y, m, d);
+    channel = DCC_FindChannelById("1088678869390856203");
+    format(timestamp, sizeof(timestamp), "%02i%02i%02i", y, m, d);
+    loll = DCC_CreateEmbed("Jateng Pride Roleplay");
+    DCC_SetEmbedTitle(loll, "JPRP");
+    DCC_SetEmbedTimestamp(loll, timestamp);
+    DCC_SetEmbedColor(loll, 0xFF0000);
+    DCC_SetEmbedFooter(loll, "JATENG PRIDE ROLEPLAY", "");
+    new string1[5000];
+    format(string1, sizeof(string1), "Kota Mengalami Badai Harap Berlindung @everyone");
+    DCC_AddEmbedField(loll, "[BMKG STATUS]: ", string1, true);
+    DCC_SendChannelEmbedMessage(channel, loll);
     return 1;
 }
 
@@ -927,6 +971,25 @@ public OnPlayerConnect(playerid)
     {
         TextDrawShowForPlayer(playerid, gServerTextdraws[1]);
     }
+
+    foreach (new ii : Player)
+    {
+        if (pData[ii][pTogLog] == 0)
+        {
+            SendClientMessageEx(ii, -1, "{FF0000}[JOIN]"YELLOW_E"%s[%d] telah join ke dalam server.", pData[playerid][pName], playerid);
+        }
+    }
+
+    new string[128];
+    format(string, sizeof(string), "PLAYER ID: %d", playerid);
+    new DCC_Embed:gatau;
+    new str[526], strk[526];
+    format(str, sizeof(str), "%s", GetPlayerNameEx(playerid));
+    format(strk, sizeof(strk), "%d/%d", online, GetMaxPlayers());
+    gatau = DCC_CreateEmbed("JATENG PRIDE ROLEPLAY", "Player Connect", "", "", 0x00FF00, "Join us @jatengpride.xyz", "", "", "");
+    DCC_AddEmbedField(gatau, str, string, true);
+    DCC_AddEmbedField(gataum "Current Player", strk, true);
+    DCC_SendChannelEmbedMessage(g_discord_server, gatau);
     return 1;
 }
 
@@ -937,12 +1000,82 @@ public OnPlayerDisconnect(playerid, reason)
         RemovePlayerFromVehicle(playerid);
     }*/
     //UpdateWeapons(playerid);
+    if (IsPlayerInAnyVehicle(playerid))
+    {
+        RemovePlayerFromVehicle(playerid);
+    }
     g_MysqlRaceCheck[playerid]++;
 
     if (pData[playerid][IsLoggedIn] == true)
     {
         UpdatePlayerData(playerid);
     }
+    Report_Clear(playerid);
+
+    pData[playerid][pAdoActive] = false;
+
+    if (cache_is_valid(pData[playerid][Cache_ID]))
+    {
+        cache_delete(pData[playerid][Cache_ID]);
+        pData[playerid][Cache_ID] = MYSQL_INVALID_CACHE;
+    }
+
+    if (pData[playerid][LoginTimer])
+    {
+        KillTimer(pData[playerid][LoginTimer]);
+        pData[playerid][LoginTimer] = 0;
+    }
+
+    pData[playerid][IsLoggedIn] = false;
+
+    new Float:x, Float:y, Float:z;
+    GetPlayerPos(playerid, x, y, z);
+
+    new reasonText[526];
+    switch (reason)
+    {
+        case 1: reasonText = "Timeout/Crash";
+        case 2: reasonText = "Quit";
+        case 3: reasonText = "Kick/Ban";
+    }
+
+    foreach (new ii : Player)
+    {
+        if (IsPlayerInRangeOfPoint(ii, 40.0, x, y, z))
+        {
+            switch (reason)
+            {
+                case 0:
+                {
+                    SendClientMessageEx(ii, COLOR_RED, "[SERVER]"YELLOW_E" %s(%d) telah keluar dari Server.{7FFFD4}(Exiting/ [/q])", pData[playerid][pName], playerid);
+                }
+                case 1:
+                {
+                    SendClientMessageEx(ii, COLOR_RED, "[SERVER]"YELLOW_E" %s(%d) telah keluar dari Server.{7FFFD4}(Disconnect)", pData[playerid][pName], playerid);
+                }
+                case 2:
+                {
+                    SendClientMessageEx(ii, COLOR_RED, "[SERVER]"YELLOW_E" %s(%d) telah keluar dari server.{7FFFD4}(Kick/Banned/Crash/Timeout)", pData[playerid][pName], playerid);
+                }
+            }
+        }
+    }
+
+    new string[1280];
+    format(string, sizeof(string), "ID %d", playerid);
+    new str[5620], reason[5260], strak[5260];
+
+
+    format(string, sizeof(string), "Player ID %d", playerid);
+    new DCC_Embed:out;
+    format(str, sizeof(str), "%s", name);
+    format(reason, sizeof(reason), "%s", reasontext);
+    format(strak, sizeof(strak), "%d/%d", online, GetMaxPlayers());
+    out = DCC_CreateEmbed("JATENG PRIDE ROLEPLAY", "Player Disconnect", "", "", 0xFF0000, "Join us @jatengpriderp.xyz", "", "", "");
+    DCC_AddEmbedField(out, str, string, true);
+    DCC_AddEmbedField(out, "Reason", reason, true);
+    DCC_AddEmbedField(out, "Current Player", strak, true);
+    DCC_SendChannelEmbedMessage(g_discord_server, out);
     return 1;
 }
 
@@ -1092,10 +1225,10 @@ public OnPlayerCommandPerformed(playerid, cmd[], params[], result, flags)
 
 public OnPlayerDeath(playerid, killerid, reason)
 {
-    if(killerid != INVALID_PLAYER_ID)
+    if (killerid != INVALID_PLAYER_ID)
     {
         new reasontext[526];
-        switch(reason)
+        switch (reason)
         {
             case 0: reasontext = "Fist";
             case 1: reasontext = "Brass Knuckles";
@@ -1121,14 +1254,14 @@ public OnPlayerDeath(playerid, killerid, reason)
         }
         new h, m, s;
         new day, month, year;
-        gettime(h,m,s);
-        getdate(year,month,day);
+        gettime(h, m, s);
+        getdate(year, month, day);
 
     }
     else
     {
         new reasontext[526];
-        switch(reason)
+        switch (reason)
         {
             case 0: reasontext = "Fist";
             case 1: reasontext = "Brass Knuckles";
@@ -1154,8 +1287,8 @@ public OnPlayerDeath(playerid, killerid, reason)
         }
         new h, m, s;
         new day, month, year;
-        gettime(h,m,s);
-        getdate(year,month,day);
+        gettime(h, m, s);
+        getdate(year, month, day);
         new name[MAX_PLAYER_NAME + 1];
         GetPlayerName(playerid, name, sizeof(name));
     }
@@ -1169,9 +1302,9 @@ public OnPlayerDeath(playerid, killerid, reason)
     SetPlayerColor(playerid, COLOR_WHITE);
     GetPlayerPos(playerid, pData[playerid][pPosX], pData[playerid][pPosY], pData[playerid][pPosZ]);
     UpdatePlayerData(playerid);
-    foreach(new ii : Player)
+    foreach (new ii : Player)
     {
-        if(pData[ii][pAdmin] > 0)
+        if (pData[ii][pAdmin] > 0)
         {
             SendDeathMessageToPlayer(ii, killerid, playerid, reason);
         }

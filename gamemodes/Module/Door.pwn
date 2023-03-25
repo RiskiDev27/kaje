@@ -236,7 +236,7 @@ CMD:editdoor(playerid, params[])
     if (sscanf(params, "ds[24]S()[128]", did, type, string))
     {
         Usage(playerid, "/editdoor [id] [name]");
-        SendClientMessage(playerid, COLOR_YELLOW, "[NAMES]:{FFFFFF} location, interior, password, name, locked , admin, VIP, faction, family, custom, virtual delete");
+        SendClientMessage(playerid, COLOR_YELLOW, "[NAMES]:{FFFFFF} location, interior, password, name, locked , admin, VIP, faction, family, custom, virtual, delete");
         return 1;
     }
 
@@ -411,7 +411,7 @@ CMD:editdoor(playerid, params[])
 
         SendAdminMessage(COLOR_RED, "%s has set entrance ID: %d to family id %d", pData[playerid][pAdminname], did, fid);
     }
-    else if (type, "garage", true)
+    else if (!strcmp(type, "garage", true))
     {
         new gid;
 
@@ -440,7 +440,7 @@ CMD:editdoor(playerid, params[])
         DestroyDynamicPickup(dData[did][dPickupExt]);
         DestroyDynamic3DTextLabel(dData[did][dLabelInt]);
         DestroyDynamicPickup(dData[did][dPickupInt]);
-        DestroyDynamicCP(dData[dCP]);
+        DestroyDynamicCP(dData[did][dCP]);
 
         dData[did][dExtPosX] = 0;
         dData[did][dExtPosY] = 0;

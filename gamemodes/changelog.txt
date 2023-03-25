@@ -19,7 +19,7 @@ Add:
 --> [+]CMD cars (admin)>OK
 Note: Administrator 50% Done. Next Goverment Faction|
 ----------------------------------------------------------->
-***Changelog v.1.4 (Gov) | BETA***
+***Changelog v.1.4 (DOOR) | BETA***
 ```
 Add:
     [+] Mapping Exterior City Hall 
@@ -43,3 +43,14 @@ Remove:
     [-] Remove string (>>) on cmd ann
 ```
 ***Note: Tester. ***
+----------------------------------------------------------->
+***Changelog v.1.4 (DOOR) | BETA***
+```
+Add:
+    []
+Remove: 
+    []
+FIX: 
+    []
+```
+***Note: Tester***
