@@ -766,6 +766,14 @@ ReturnName(playerid)
     return name;
 }
 
+GetPlayerNameEx(playerid)
+{
+    new name[MAX_PLAYER_NAME];
+
+    GetPlayerName(playerid, name, sizeof(name));
+    return name;
+}
+
 SetPlayerHealthEx(playerid, Float:heal)
 {
     pData[playerid][pHealth] = heal;
@@ -951,13 +959,9 @@ SetVehiclePosition(playerid, vehicleid, Float:x, Float:y, Float:z, Float:a, inte
 GetWeatherName(weatherid)
 {
     new cuaca[128];
-    if (weatherid == 0)
+    if (weatherid == 0 || weatherid == 1)
     {
-        cuaca = "{25CED1}EXTRASUNNY_LA";
-    }
-    else if (weatherid == 1)
-    {
-        cuaca = "{25CED1}SUNNY_LA";
+        cuaca = "{25CED1}CERAH", weatherid;
     }
     else if (weatherid == 2)
     {
@@ -981,7 +985,7 @@ GetWeatherName(weatherid)
     }
     else if (weatherid == 7)
     {
-        cuaca = "{25CED1}CLOUDY_SF";
+        cuaca = "{25CED1}CLOUDY_SF[%d]", weatherid;
     }
     else if (weatherid == 8)
     {
@@ -1009,7 +1013,7 @@ GetWeatherName(weatherid)
     }
     else if (weatherid == 14)
     {
-        cuaca = "{25CED1}SUNNY_COUNTRYSIDE";
+        cuaca = "{60AFFF}CERAH[%d]", weatherid;
     }
     else if (weatherid == 15)
     {

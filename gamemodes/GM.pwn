@@ -814,6 +814,24 @@ stock const g_aWeatherRotations[] =
 
 // DISCORD BOT
 new DCC_Channel:g_discord_server;
+new DCC_Channel:g_discord_logServer;
+new DCC_Channel:g_discord_note;
+// Faction Vehicle
+#define VEHICLE_RESPAWN 7200
+
+new SAGSVehicle[30];
+
+new SAGSLobbyBtn[2],
+    SAGSLobbyDoor;
+
+IsGovCar(carid)
+{
+    for (new v = 0; v < sizeof(SAGSVehicle); v++)
+    {
+        if (carid == SAGSVehicle[v]) return 1;
+    }
+    return 1;
+}
 main()
 {
     print("Test Script");
@@ -828,8 +846,11 @@ main()
 #include "Module\Report.pwn"
 #include "Module\Vehicle.pwn"
 #include "Module\Door.pwn"
+#include "Module\Server.pwn"
+#include "Module\DynamicLocker.pwn"
 #include "Module\CMD\Admin.pwn"
 #include "Module\CMD\Player.pwn"
+#include "Module\CMD\Faction.pwn"
 #include "Module\Function.pwn"
 
 public OnGameModeInit()
@@ -849,11 +870,14 @@ new MySQLOpt:
     print("MySQL connection is successful.");
 
     mysql_tquery(g_SQL, "SELECT * FROM `doors`", "LoadDoors");
+    mysql_tquery(g_SQL, "SELECT * FROM `lockers`", "LoadLocker");
 
     SpawnMale = LoadModelSelectionMenu("spawnmale.txt");
     SpawnFemale = LoadModelSelectionMenu("spawnfemale.txt");
 
     CreatePublicTextDraws();
+    CreateServerPoint();
+
     SetTimer("PlayerCheck", 1000, true);
     SetGameModeText(TEXT_GAMEMODE);
     new rcon[50];
@@ -866,6 +890,12 @@ new MySQLOpt:
     print("Gamemode Ready to Play!");
 
     g_discord_server = DCC_FindChannelById("1089051513671917598");
+    g_discord_logServer = DCC_FindChannelById("1081536963603087390");
+    g_discord_note = DCC_FindChannelById("1085910215515439185");
+
+    SAGSLobbyBtn[0] = CreateButton(1388.987670, -25.291969, 1001.358520, 180.000000);
+    SAGSLobbyBtn[1] = CreateButton(1391.275756, -25.481920, 1001.358520, 0.000000);
+    SAGSLobbyDoor = CreateDynamicObject(1569, 1389.375000, -25.387500, 999.978210, 0.000000, 0.000000, 0.000000, -1, -1, -1, 300.00, 300.00);
 
     printf("[Object] >>  Number of Dynamic object loaded: %d", CountDynamicObjects());
     new DCC_Channel:channel, DCC_Embed:logss;
@@ -874,14 +904,16 @@ new MySQLOpt:
     channel = DCC_FindChannelById("1088678869390856203"); //
     format(timestamp, sizeof(timestamp), "%02i%02i%02i", y, m, d);
     logss = DCC_CreateEmbed("Jateng Pride Roleplay");
-    DCC_SetEmbedTitle(logss, "JATENG PRIDE");
+    DCC_SetEmbedTitle(logss, "JATENG PRIDE ROLEPLAY");
     DCC_SetEmbedTimestamp(logss, timestamp);
-    DCC_SetEmbedFooter(logss, "JATENG PRIDE ROLEPLAY", "");
-    new string1[5000];
-    format(string1, sizeof(string1), "Server Kembali mengudara @everyone");
-    DCC_AddEmbedField(logss, "Server Status", string1, true);
-    DCC_SendChannelEmbedMessage(channel, logss);
     DCC_SetEmbedColor(logss, 0x99D5C9);
+    DCC_SetEmbedFooter(logss, "JATENG PRIDE ROLEPLAY", "");
+    new string1[5000], string2[50000];
+    format(string1, sizeof(string1), "Server Kembali mengudara @everyone");
+    format(string2, sizeof(string2), "jika ada masalah /report admin\nSmoega aman terkendali.@everyone");
+    DCC_AddEmbedField(logss, "KOTA SUDAH MENGUDARA KEMBALI✈", string2, true);
+    DCC_SendChannelEmbedMessage(channel, logss);
+
 
     for (new i = 0; i < MAX_PLAYERS; i++)
     {
@@ -903,7 +935,7 @@ public OnGameModeExit()
     }
     printf("[Database] User Saved: %d", user);
     print("------------------[Auto Restart]--------------");
-    SendClientMessageToAll(COLOR_RED, "{FFFFFF}[!]{FFFF00}Server is Maintenance/Restart.{00FFFF} >> RISKI BOTS");
+    SendClientMessageToAll(COLOR_RED, "{FFFFFF}[!]{D88C9A}Server is Maintenance/Restart.{00FFFF} >> RISKI BOTS");
 
     mysql_close(g_SQL);
     new DCC_Channel:channel, DCC_Embed:loll;
@@ -912,13 +944,13 @@ public OnGameModeExit()
     channel = DCC_FindChannelById("1088678869390856203");
     format(timestamp, sizeof(timestamp), "%02i%02i%02i", y, m, d);
     loll = DCC_CreateEmbed("Jateng Pride Roleplay");
-    DCC_SetEmbedTitle(loll, "JPRP");
+    DCC_SetEmbedTitle(loll, "JATENG PRIDE ROLEPLAY");
     DCC_SetEmbedTimestamp(loll, timestamp);
     DCC_SetEmbedColor(loll, 0xFF0000);
     DCC_SetEmbedFooter(loll, "JATENG PRIDE ROLEPLAY", "");
     new string1[5000];
-    format(string1, sizeof(string1), "Kota Mengalami Badai Harap Berlindung @everyone");
-    DCC_AddEmbedField(loll, "[BMKG STATUS]: ", string1, true);
+    format(string1, sizeof(string1), "Warga diharap berteduh dan bersiap mencari tempat aman terimkasih @everyone");
+    DCC_AddEmbedField(loll, "KOTA SEDANG MENGALAMI BADAI", string1, true);
     DCC_SendChannelEmbedMessage(channel, loll);
     return 1;
 }
@@ -976,9 +1008,78 @@ public OnPlayerConnect(playerid)
     {
         if (pData[ii][pTogLog] == 0)
         {
-            SendClientMessageEx(ii, -1, "{FF0000}[JOIN]"YELLOW_E"%s[%d] telah join ke dalam server.", pData[playerid][pName], playerid);
+            SendClientMessageEx(ii, -1, "{FF0000}[JOIN]"YELLOW_E"%s[%d] telah join ke dalam server.{00FFFF}(%s,%s)", pData[playerid][pName], playerid, kota, negara);
         }
     }
+
+    // tmp
+    // Remove insu
+    RemoveBuildingForPlayer(playerid, 1490, 2399.409, -1552.030, 28.750, 0.250);
+    RemoveBuildingForPlayer(playerid, 17862, 2458.379, -1532.439, 22.992, 0.250);
+    RemoveBuildingForPlayer(playerid, 17868, 2458.379, -1532.439, 22.992, 0.250);
+    RemoveBuildingForPlayer(playerid, 1308, 2333.159, -1428.930, 23.195, 0.250);
+    RemoveBuildingForPlayer(playerid, 760, 2444.679, -1542.780, 23.203, 0.250);
+    RemoveBuildingForPlayer(playerid, 620, 2445.800, -1543.260, 21.804, 0.250);
+    RemoveBuildingForPlayer(playerid, 17851, 2457.020, -1494.719, 37.492, 0.250);
+    RemoveBuildingForPlayer(playerid, 1525, 2462.270, -1541.410, 25.421, 0.250);
+    RemoveBuildingForPlayer(playerid, 760, 2463.729, -1542.780, 23.203, 0.250);
+    RemoveBuildingForPlayer(playerid, 620, 2457.020, -1542.699, 21.804, 0.250);
+    RemoveBuildingForPlayer(playerid, 1297, 2474.100, -1544.260, 26.359, 0.250);
+    RemoveBuildingForPlayer(playerid, 17974, 2467.459, -1538.250, 27.601, 0.250);
+    RemoveBuildingForPlayer(playerid, 17863, 2467.459, -1538.250, 27.601, 0.250);
+    RemoveBuildingForPlayer(playerid, 1308, 2442.989, -1559.079, 23.210, 0.250);
+    RemoveBuildingForPlayer(playerid, 760, 2446.159, -1562.199, 23.335, 0.250);
+    RemoveBuildingForPlayer(playerid, 673, 2451.659, -1561.550, 23.312, 0.250);
+    RemoveBuildingForPlayer(playerid, 1297, 2459.270, -1558.729, 26.203, 0.250);
+    RemoveBuildingForPlayer(playerid, 760, 2467.800, -1562.199, 23.335, 0.250);
+    RemoveBuildingForPlayer(playerid, 616, 2469.409, -1562.130, 22.562, 0.250);
+    RemoveBuildingForPlayer(playerid, 673, 2495.270, -1553.079, 22.867, 0.250);
+    RemoveBuildingForPlayer(playerid, 760, 2495.159, -1549.750, 23.335, 0.250);
+    RemoveBuildingForPlayer(playerid, 673, 2495.270, -1538.010, 22.867, 0.250);
+    RemoveBuildingForPlayer(playerid, 760, 2494.010, -1529.219, 23.335, 0.250);
+    RemoveBuildingForPlayer(playerid, 673, 2495.270, -1522.800, 22.867, 0.250);
+    RemoveBuildingForPlayer(playerid, 760, 2494.209, -1521.609, 23.335, 0.250);
+    RemoveBuildingForPlayer(playerid, 1308, 2491.830, -1516.510, 23.210, 0.250);
+    RemoveBuildingForPlayer(playerid, 1297, 2482.929, -1530.540, 26.304, 0.250);
+    RemoveBuildingForPlayer(playerid, 1297, 2474.629, -1518.770, 26.304, 0.250);
+    RemoveBuildingForPlayer(playerid, 1267, 2445.199, -1519.390, 37.054, 0.250);
+    RemoveBuildingForPlayer(playerid, 1261, 2445.199, -1519.390, 37.054, 0.250);
+    RemoveBuildingForPlayer(playerid, 1297, 2493.229, -1508.959, 26.304, 0.250);
+    RemoveBuildingForPlayer(playerid, 1297, 2459.250, -1508.959, 26.304, 0.250);
+    RemoveBuildingForPlayer(playerid, 1297, 2435.949, -1515.560, 26.226, 0.250);
+    RemoveBuildingForPlayer(playerid, 1297, 2435.949, -1542.839, 26.226, 0.250);
+
+    // Dealer
+    RemoveBuildingForPlayer(playerid, 5762, 1315.369, -887.468, 41.703, 0.250);
+    RemoveBuildingForPlayer(playerid, 5852, 1315.369, -887.468, 41.703, 0.250);
+    RemoveBuildingForPlayer(playerid, 1522, 1314.729, -897.265, 38.468, 0.250);
+
+    // Burger
+    RemovePlayerFromVehicle(playerid, 627, 1209.900, -1482.380, 14.140, 0.250);
+    RemoveBuildingForPlayer(playerid, 627, 1230.130, -1482.380, 14.140, 0.250);
+    RemoveBuildingForPlayer(playerid, 627, 1206.479, -1465.160, 14.140, 0.250);
+    RemoveBuildingForPlayer(playerid, 627, 1206.479, -1454.119, 14.140, 0.250);
+    RemoveBuildingForPlayer(playerid, 627, 1206.479, -1444.849, 14.140, 0.250);
+    RemoveBuildingForPlayer(playerid, 627, 1206.479, -1433.810, 14.140, 0.250);
+    RemoveBuildingForPlayer(playerid, 627, 1230.130, -1416.569, 14.140, 0.250);
+    RemoveBuildingForPlayer(playerid, 627, 1209.900, -1416.569, 14.140, 0.250);
+    RemoveBuildingForPlayer(playerid, 6052, 1247.910, -1429.969, 15.125, 0.250);
+    RemoveBuildingForPlayer(playerid, 6068, 1247.910, -1429.969, 15.125, 0.250);
+
+    // BENGKEL
+    RemoveBuildingForPlayer(playerid, 3625, 1961.449, -25216.169, 14.984, 0.250);
+    RemoveBuildingForPlayer(playerid, 3769, 1961.449, -2216.169, 14.984, 0.250);
+    RemoveBuildingForPlayer(playerid, 1412, 1965.170, -2227.409, 13.757, 0.250);
+    RemoveBuildingForPlayer(playerid, 1412, 1959.900, -2227.449, 13.726, 0.250);
+    RemoveBuildingForPlayer(playerid, 3664, 1960.699, -2236.429, 19.281, 0.250);
+    RemoveBuildingForPlayer(playerid, 1412, 1970.449, -2227.409, 13.757, 0.250);
+    RemoveBuildingForPlayer(playerid, 1412, 1975.729, -2227.409, 13.757, 0.250);
+    RemoveBuildingForPlayer(playerid, 1412, 1981.000, -2227.409, 13.757, 0.250);
+    RemoveBuildingForPlayer(playerid, 1412, 1986.280, -2227.409, 13.757, 0.250);
+    RemoveBuildingForPlayer(playerid, 1412, 1991.550, -2227.409, 13.757, 0.250);
+    RemoveBuildingForPlayer(playerid, 1308, 1983.800, -2224.159, 12.750, 0.250);
+    RemoveBuildingForPlayer(playerid, 1215, 1983.859, -2281.709, 13.062, 0.250);
+    RemoveBuildingForPlayer(playerid, 1215, 1980.920, -2355.209, 13.062, 0.250);
 
     new string[128];
     format(string, sizeof(string), "PLAYER ID: %d", playerid);
@@ -988,7 +1089,7 @@ public OnPlayerConnect(playerid)
     format(strk, sizeof(strk), "%d/%d", online, GetMaxPlayers());
     gatau = DCC_CreateEmbed("JATENG PRIDE ROLEPLAY", "Player Connect", "", "", 0x00FF00, "Join us @jatengpride.xyz", "", "", "");
     DCC_AddEmbedField(gatau, str, string, true);
-    DCC_AddEmbedField(gataum "Current Player", strk, true);
+    DCC_AddEmbedField(gatau, "Current Player", strk, true);
     DCC_SendChannelEmbedMessage(g_discord_server, gatau);
     return 1;
 }
@@ -1037,6 +1138,7 @@ public OnPlayerDisconnect(playerid, reason)
         case 1: reasonText = "Timeout/Crash";
         case 2: reasonText = "Quit";
         case 3: reasonText = "Kick/Ban";
+        case Default: reasonText = "Force";
     }
 
     foreach (new ii : Player)
@@ -1063,17 +1165,17 @@ public OnPlayerDisconnect(playerid, reason)
 
     new string[1280];
     format(string, sizeof(string), "ID %d", playerid);
-    new str[5620], reason[5260], strak[5260];
+    new str[5620], reason1[5260], strak[5260];
 
 
     format(string, sizeof(string), "Player ID %d", playerid);
     new DCC_Embed:out;
-    format(str, sizeof(str), "%s", name);
-    format(reason, sizeof(reason), "%s", reasontext);
+    format(str, sizeof(str), "%s", pData[playerid][pName]);
+    format(reason1, sizeof(reason1), "%s", reasonText);
     format(strak, sizeof(strak), "%d/%d", online, GetMaxPlayers());
     out = DCC_CreateEmbed("JATENG PRIDE ROLEPLAY", "Player Disconnect", "", "", 0xFF0000, "Join us @jatengpriderp.xyz", "", "", "");
     DCC_AddEmbedField(out, str, string, true);
-    DCC_AddEmbedField(out, "Reason", reason, true);
+    DCC_AddEmbedField(out, "Reason", reason1, true);
     DCC_AddEmbedField(out, "Current Player", strak, true);
     DCC_SendChannelEmbedMessage(g_discord_server, out);
     return 1;
@@ -1139,6 +1241,7 @@ public OnPlayerSpawn(playerid)
     if (pData[playerid][pAdmin] > 0 || pHelper > 0)
     {
         SendClientMessageEx(playerid, -1, "You logged in with Admin level: %s", GetStaffRank(playerid));
+        SendClientMessage(playerid, -1, "1.REVISI LOCKER 2.REVISI WEATHER 3.REVISI BUTTONSAGS");
     }
 
     return 1;
@@ -1309,5 +1412,114 @@ public OnPlayerDeath(playerid, killerid, reason)
             SendDeathMessageToPlayer(ii, killerid, playerid, reason);
         }
     }
+    return 1;
+}
+
+
+public OnplayerPressButton(playerid, buttonid)
+{
+    if (buttonid == SAGSLobbyBtn[0] || buttonid == SAGSLobbyBtn[1])
+    {
+        if (pData[playerid][pFaction] == 2)
+        {
+            MoveDynamicObject(SAGSLobbyDoor, 1387.9232, -25.3887, 999.9782, 3);
+            SetTimer("SAGSLobbyDoorClose", 5000, 0);
+        }
+        else
+        {
+            Error(playerid, "Access Denied!");
+            return 1;
+        }
+    }
+    return 1;
+}
+
+// tmp
+CMD:tmp(playerid, params[])
+{
+    if (!pData[playerid][pAdmin] == 6)
+        return PermissionError(playerid);
+
+    SetPlayerPos(playerid, 389.375000, -25.387500, 999.978210);
+    SendClientMessageEx(playerid, COLOR_BAN, "[TMP]: Admin "LRED_E"%s"WHITE_E" Teleported to Area Temp", pData[playerid][pAdminname]);
+    return 1;
+}
+
+CMD:acars(playerid, params[])
+{
+    if (!pData[playerid][pAdmin] == 6)
+        return PermissionError(playerid);
+
+    if (!pData[playerid][pAdminDuty])
+        return Error(playerid, "You're not On Duty Admin!");
+
+
+    new vehicleid, model[32], string[300];
+    vehicleid = GetPlayerVehicleID(playerid);
+    format(string, sizeof(string), "VEHICLE: %d\n", vehicleid);
+    SendClientMessageEx(playerid, -1, string);
+    return 1;
+}
+
+
+CMD:setweather(playerid, params[])
+{
+    if (!pData[playerid][pAdmin] == 6)
+        return PermissionError(playerid);
+
+    if (!pData[playerid][pAdminDuty])
+        return Error(playerid, "You're not On Duty Admin!");
+
+    new cuaca;
+    if (sscanf(params, "d", cuaca))
+        return Usage(playerid, "/setweather [name]");
+
+    SetWeather(cuaca);
+    SendClientMessageEx(playerid, COLOR_RED, "[ADMIN]: %s has change weather %s", pData[playerid][pAdminname], GetWeatherName(cuaca));
+    return 1;
+}
+
+CMD:gotocar(playerid, params[])
+{
+    if (!pData[playerid][pAdmin] == 6)
+        return PermissionError(playerid);
+
+    if (!pData[playerid][pAdminDuty])
+        return Error(playerid, "You're not On Duty Admin");
+
+    new vehicleid;
+
+    if (sscanf(params, "d", vehicleid))
+        return Usage(playerid, "/gotocar [vehicleid]");
+
+    if (vehicleid < 1 || !IsValidVehicle(vehicleid))
+        return Error(playerid, "You have specified an invalid vehicle ID");
+
+    static Float:x, Float:y, Float:z;
+
+    GetVehiclePos(vehicleid, x, y, z);
+    SetPlayerPos(playerid, x, y - 2, z + 2);
+    return 1;
+}
+
+CMD:note(playerid, params[])
+{
+    if (!pData[playerid][pAdmin] == 6)
+        return PermissionError(playerid);
+
+    if (!pData[playerid][pAdminDuty])
+        return Error(playerid, "You're not On Duty Admin!");
+    new string[100], note1[300];
+    if (sscanf(params, "s[100]", string))
+        return Usage(playerid, "/note [string]");
+
+    SendClientMessageEx(playerid, 0xA6D49F, "Admin %s >> Create note %s berhasil", pData[playerid][pAdminname], params);
+    format(string, sizeof(string), "%s", params);
+    format(note1, sizeof(note1), "***Note***\n```%s```", params);
+    new DCC_Embed:note;
+    note = DCC_CreateEmbed("JATENG PRIDE ROLEPLAY", "Note", "", "", 0x00FF00, "Join us @JPRP.xyz", "", "", "");
+    DCC_AddEmbedField(note, "Note", string);
+    DCC_SendChannelEmbedMessage(g_discord_note, note);
+    DCC_SendChannelMessage(g_discord_note, note1);
     return 1;
 }

@@ -468,12 +468,13 @@ function JailPlayer(playerid)
 function WeatherRotator()
 {
     // gettime(&hour = 0, &hour = 0, &hour = 0)
+    new weatherid;
     new hours, minutes, second;
-    new time = gettime(hours, minutes, second);
+    new time = gettime(second);
     new index = random(sizeof(g_aWeatherRotations));
 
     SetWeather(g_aWeatherRotations[index]);
-    SendClientMessageToAllEx(COLOR_LRED, "[BMKG]: Cuaca : %s {FFFFFF}Time: (%02d)", GetWeatherName(index), time);
+    SendClientMessageToAllEx(COLOR_LRED, "[BMKG]: Cuaca : %s [%d]{FFFFFF}Time: (%02d)", GetWeatherName(index), index, gettime());
     // SendClientMessageEx(playerid, -1, "[SYSTEM]: WEATHER %d", g_aWeatherRotations[index]);
 }
 

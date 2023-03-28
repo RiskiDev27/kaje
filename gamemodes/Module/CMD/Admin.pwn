@@ -14,14 +14,14 @@ CMD:aduty(playerid, params[])
             SetPlayerColor(playerid, 0xFF0000);
             pData[playerid][pAdminDuty] = 1;
             SetPlayerName(playerid, pData[playerid][pAdminname]);
-            SendStaffMessage(COLOR_RIKO, "{FF0000}%s {FFFFFF} %s has "GREEN_E"Onduty {FFFFFF} Admins", GetStaffRank(playerid), pData[playerid][pName]);
+            SendStaffMessage(COLOR_RIKO, "{FF0000}%s {FFFFFF} %s has "RED_E"Onduty {FFFFFF} Admins", GetStaffRank(playerid), pData[playerid][pAdminname]);
         }
         else
         {
             SetPlayerColor(playerid, COLOR_GREEN);
             pData[playerid][pAdminDuty] = 1;
             SetPlayerName(playerid, pData[playerid][pAdminname]);
-            SendStaffMessage(COLOR_RIKO, "{FFFFFF} %s has "PURPLE_E"Onduty {FFFFFF} Helper", GetStaffRank(playerid), pData[playerid][pName]);
+            SendStaffMessage(COLOR_RIKO, "{FFFFFF} %s has "GREEN_E"Onduty {FFFFFF} Helper", GetStaffRank(playerid), pData[playerid][pName]);
         }
     }
     else
@@ -30,7 +30,7 @@ CMD:aduty(playerid, params[])
         SetPlayerColor(playerid, COLOR_WHITE);
         pData[playerid][pAdminDuty] = 0;
         SetPlayerName(playerid, pData[playerid][pName]);
-        SendStaffMessage(COLOR_RIKO, "{FF0000} %s {FFFFFF} %s has "YELLOW_E"Offduty {FFFFFF} Admins", GetStaffRank(playerid), pData[playerid][pName]);
+        SendStaffMessage(COLOR_RIKO, "{FF0000} %s {FFFFFF} %s has "DARK_E"Offduty {FFFFFF} Admins", GetStaffRank(playerid), pData[playerid][pName]);
     }
     return 1;
 }
@@ -265,7 +265,7 @@ CMD:jetpack(playerid, params[])
     return 1;
 }
 
-CMD:veh(playerid, params[])
+CMD:car(playerid, params[])
 {
     static model[32],
            color1,
@@ -279,7 +279,10 @@ CMD:veh(playerid, params[])
     if (sscanf(params, "s[32]I(-1)I(-1)", model, color1, color2))
     {
         Usage(playerid, "/cars [model ID/name cars] [Color First] [Color Second]");
-        SendClientMessage(playerid, -1, "SULTAN | REMINGTON | FELTSET | Cabbie | CADDY | BUCCANEE | PETRO | ETC");
+        new str[500];
+        format(str, sizeof(str), "SULTAN | REMINGTON | FELTSET | Cabbie | CADDY | BUCCANEE | TANKER | GLENDALE (466)|\n");
+        format(str, sizeof(str), "%sEnforcer ({FF0000}427) | Willard {FF0000}(529) | Romero (442) | Oceanic (467) |ETC", str);
+        SendClientMessageEx(playerid, -1, str);
         return 1;
     }
 
@@ -302,6 +305,8 @@ CMD:veh(playerid, params[])
 
     SetVehicleNumberPlate(vehicleid, "STATIC");
     Servers(playerid, "You have spawned a %s (%d, %d).", GetVehicleModelName(model[0]), color1, color2);
+    format(string, sizeof(string), "```Vehicle: %s Has Spawned Vehicle >> %s (%d, %d).```", pData[playerid][pAdminname], GetVehicleModelName(model[0]), color1, color2);
+    DCC_SendChannelMessage(g_discord_logServer, string);
     return 1;
 }
 
@@ -554,7 +559,7 @@ CMD:ahelp(playerid, params[])
 {
     if (!pData[playerid][pAdmin] == 6)
         return PermissionError(playerid);
-    new str[2000];
+    new str[3000];
     format(str, sizeof(str), "ahelp\tshow all command\n");
     format(str, sizeof(str), "%s{25CED1}aduty\t{FFFFFF}on duty admin\n", str);
     format(str, sizeof(str), "%s{25CED1}setadminname\t{FFFFFF}change admin name\n", str);
@@ -567,8 +572,15 @@ CMD:ahelp(playerid, params[])
     format(str, sizeof(str), "%s{24CED1}jetpack\tSpawn Jetpack\n", str);
     format(str, sizeof(str), "%s{25CED1}veh\tSpawn Vehicle Static\n", str);
     format(str, sizeof(str), "%s{25CED1}setfaction\tSet Player Faction\n", str);
-    format(str, sizeof(str), "%s{25CED1}setleader\nSet Leader Player Faction\n", str);
-    format(str, sizeof(str), "%s{25CED1}ann\nAnnouncement Text\n", str);
+    format(str, sizeof(str), "%s{25CED1}setleader\tSet Leader Player Faction\n", str);
+    format(str, sizeof(str), "%s{25CED1}ann\tAnnouncement Text\n", str);
+    format(str, sizeof(str), "%s{25CED1}revive\tRevive Player\n", str);
+    format(str, sizeof(str), "%s{25CED1}sethealth\t Set Player Health\n", str);
+    format(str, sizeof(str), "%s{25CED1}setgold\tSet gold coin player\n", str);
+    format(str, sizeof(str), "%s{25CED1}cord\tShow Coordinat\n", str);
+    format(str, sizeof(str), "%s{25CED1}setvip\t Set Player VIP\n", str);
+    format(str, sizeof(str), "%s{FA8334}createlocker\tCreate dynamic locker\n", str);
+    format(str, sizeof(str), "%s{FA8334}gotolocker\tTeleport to locker\n", str);
     ShowPlayerDialog(playerid, DIALOG_UNUSED, DIALOG_STYLE_TABLIST_HEADERS, "ADMIN COMMAND", str, "Ok", "Exit");
 
     return 1;

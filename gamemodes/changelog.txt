@@ -47,7 +47,12 @@ Remove:
 ***Changelog v.1.4 (DOOR) | BETA***
 ```
 Add:
-    []
+    [
+        Penambahan Button SAGS
+        Penambahan CMD factionhelp (SAGS)
+        Penambahan CMD createlocker (Admin only)
+        Penambahan CMD gotolocker (Admin only)
+    ]
 Remove: 
     []
 FIX: 
