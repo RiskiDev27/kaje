@@ -22,3 +22,32 @@ CMD:factionhelp(playerid)
     }
     return 1;
 }
+
+CMD:locker(playerid, params[])
+{
+    if (pData[playerid][pFaction] < 1)
+        if (pData[playerid][pFamily] < 1)
+            return Error(playerid, "Civilian can't use this command!");
+
+    foreach (new lid : Lockers)
+    {
+        if (IsPlayerInRangeOfPoint(playerid, 2.5, lData[lid][lPosZ], lData[lid][lPosY], lData[lid][lPosZ]))
+        {
+            if (pData[playerid][pVip] > 0 && lData[lid][lType] == 6)
+            {
+                ShowPlayerDialog(playerid, DIALOG_LOCKERVIP, DIALOG_STYLE_LIST, "VIP Locker", "Health\nWeapon\nClothing\nVIP Toys", "Select", "Cancell");
+            }
+            else if (pData[playerid][pFaction] == 1)
+            {
+                ShowPlayerDialog(playerid, DIALOG_LOCKERSAPD, DIALOG_STYLE_LIST, "SAPD Locker", "Toggle Duty\nVest\nWeapon\nClothing", "Select", "Cancell");
+            }
+            else if (pData[playerid][pFaction] == 2)
+            {
+                ShowPlayerDialog(playerid, DIALOG_LOCKERSAGS, DIALOG_STYLE_LIST, "SAGS Locker", "Toggle Duty\nPerlengkapan\nClothing", "Select", "Cancell");
+            }
+            // next
+            else return Error(playerid, "You are not in this faction type");
+        }
+    }
+    return 1;
+}

@@ -230,7 +230,7 @@ CMD:editlocker(playerid, params[])
         if (sscanf(string, "d", tipe))
             return Usage(playerid, "/editlocker >> [id] >> [type: 1.SAPD, 2.SAGS, 3.SAMD, 4.SANA 5.VIP Locker]");
 
-        if (type < 1 || type > 5)
+        if (tipe < 1 || tipe > 5)
             return Error(playerid, "You must specified at least 1 - 5");
 
         lData[lid][lType] = tipe;
@@ -253,12 +253,23 @@ CMD:editlocker(playerid, params[])
         lData[lid][lInt] = 0;
         lData[lid][lLabel] = Text3D:INVALID_3DTEXT_ID;
         lData[lid][lPickup] = -1;
+        Iter_Remove(Lockers, lid);
         mysql_format(g_SQL, query, sizeof(query), "DELETE FROM lockers WHERE id=%d", lid);
         mysql_tquery(g_SQL, query);
         SendAdminMessage(COLOR_RED, "Admin %s >> has delete locker ID: %d", pData[playerid][pAdminname], lid);
         new log[300];
         format(log, sizeof(log), "**LOCKER**\n> CMD LOCKER: Admin %s telah menghapus locker ID >> %d", pData[playerid][pAdminname], lid);
         DCC_SendChannelMessage(g_discord_logServer, log);
+    }
+    return 1;
+}
+
+CMD:lockerid(playerid, params[])
+{
+    new idx, lid;
+    for (idx; idx < lid; idx++)
+    {
+        SendClientMessageEx(playerid, -1, "Locker %d to faction %s\n", idx, GetLockerName(lid));
     }
     return 1;
 }

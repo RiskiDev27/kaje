@@ -829,13 +829,13 @@ DisplayStats(playerid, p2)
     }
     else
     {
-        fac = "Penganguran";
+        fac = "Warga";
     }
 
     new fname[128];
     if (fid != -1)
     {
-        format(fname, 128, "Penganguran");
+        format(fname, 128, "Warga");
     }
     new atext[512];
     new boost = pData[playerid][pBooster];
@@ -858,7 +858,7 @@ DisplayStats(playerid, p2)
     format(header, sizeof(header), "Stats: "GREEN_E"%s | "WHITE_E"UCP: "AQUA"%s", pData[p2][pName], pData[p2][pUCP]);
     format(gstr, sizeof(gstr), ""RED_E"In Character"WHITE_E"\n");
     format(gstr, sizeof(gstr), "%s{FFFFFF}Gender: [{FFFF00}%s{FFFFFF}] | Money: [{00FF00}$%s{FFFFFF}] | Bank: [{00FF00}%s{FFFFFF}] | Rekening Bank: [{C6E2FF}%d{FFFFFF}] | Phone Number: [{C6E2FF}%d{FFFFFF}]\n", gstr, (pData[p2][pGender] == 2) ? ("Female") : ("Male"), FormatMoney(pData[p2][pMoney]), FormatMoney(pData[p2][pBankMoney]), pData[p2][pBankRek], pData[p2][pPhone]);
-    format(gstr, sizeof(gstr), "%sBirthdate: [{FFFF00}%s{FFFFFF}] | Job: [{C6E2FF}%s{FFFFFF}] | Job2: [{C6E2FF}%s{FFFFFF}] | [{C6E2FF}%s{FFFFFF}] | Family: [%s]\n", gstr, pData[p2][pAge], GetJobName(pData[p2][pJob]), GetJobName(pData[p2][pJob2]), fac, fname, frname);
+    format(gstr, sizeof(gstr), "%sBirthdate: [{FFFF00}%s{FFFFFF}] | Job: [{C6E2FF}%s{FFFFFF}] | Job2: [{C6E2FF}%s{FFFFFF}] | Faction: [{C6E2FF}%s{FFFFFF}] | Family: [%s]\n", gstr, pData[p2][pAge], GetJobName(pData[p2][pJob]), GetJobName(pData[p2][pJob2]), fac, fname, frname);
     format(gstr, sizeof(gstr), "%sCharacter Story: [%s{FFFFFF}] | Health: [%f{FFFFFF}]\n\n", gstr, GetPlayerCharacterStory(p2), pData[p2][pHealth]);
     format(gstr, sizeof(gstr), "%s"RED_E"Out of Character"WHITE_E"\n", gstr);
     format(gstr, sizeof(gstr), "%sLevel Score: [{FF0000}%d/%d{FFFFFF}] | Email: [{FFFF00}%s{FFFFFF}] | Warning: [{FF0000}%d/20{FFFFFF}] | Last Login: [{FF0000}%s{FFFFFF}]\n", gstr, pData[p2][pLevelUp], scoremath, pData[p2][pEmail], pData[p2][pWarn], pData[p2][pLastLogin]);
@@ -961,11 +961,11 @@ GetWeatherName(weatherid)
     new cuaca[128];
     if (weatherid == 0 || weatherid == 1)
     {
-        cuaca = "{25CED1}CERAH", weatherid;
+        cuaca = "{25CED1}CERAH";
     }
     else if (weatherid == 2)
     {
-        cuaca = "{25CED1}EXTRASUNNY_LA";
+        cuaca = "{25CED1}Sangat Cerah";
     }
     else if (weatherid == 3)
     {
@@ -985,7 +985,7 @@ GetWeatherName(weatherid)
     }
     else if (weatherid == 7)
     {
-        cuaca = "{25CED1}CLOUDY_SF[%d]", weatherid;
+        cuaca = "{25CED1}Hujan";
     }
     else if (weatherid == 8)
     {
@@ -1013,7 +1013,7 @@ GetWeatherName(weatherid)
     }
     else if (weatherid == 14)
     {
-        cuaca = "{60AFFF}CERAH[%d]", weatherid;
+        cuaca = "{60AFFF}CERAH";
     }
     else if (weatherid == 15)
     {
@@ -1122,4 +1122,31 @@ ColouredText(text[])
         }
     }
     return string;
+}
+
+SetFactionColor(playerid)
+{
+    new factionid = pData[playerid][pFaction];
+
+    if (factionid == 1)
+    {
+        SetPlayerColor(playerid, COLOR_BLUE);
+    }
+    else if (factionid == 2)
+    {
+        SetPlayerColor(playerid, COLOR_LBLUE);
+    }
+    else if (factionid == 3)
+    {
+        SetPlayerColor(playerid, COLOR_PINK2);
+    }
+    else if (factionid == 4)
+    {
+        SetPlayerColor(playerid, COLOR_ORANGE);
+    }
+    else
+    {
+        SetPlayerColor(playerid, COLOR_WHITE);
+    }
+    return 1;
 }

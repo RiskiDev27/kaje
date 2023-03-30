@@ -885,6 +885,7 @@ new MySQLOpt:
     SendRconCommand(rcon);
 
     EnableStuntBonusForAll(0);
+    ManualVehicleEngineAndLights();
     DisableInteriorEnterExits();
     WeatherRotator();
     print("Gamemode Ready to Play!");
@@ -1106,6 +1107,7 @@ public OnPlayerDisconnect(playerid, reason)
         RemovePlayerFromVehicle(playerid);
     }
     g_MysqlRaceCheck[playerid]++;
+    online--;
 
     if (pData[playerid][IsLoggedIn] == true)
     {
@@ -1138,7 +1140,8 @@ public OnPlayerDisconnect(playerid, reason)
         case 1: reasonText = "Timeout/Crash";
         case 2: reasonText = "Quit";
         case 3: reasonText = "Kick/Ban";
-        case Default: reasonText = "Force";
+        default:
+            reasonText = "Force";
     }
 
     foreach (new ii : Player)
@@ -1416,7 +1419,7 @@ public OnPlayerDeath(playerid, killerid, reason)
 }
 
 
-public OnplayerPressButton(playerid, buttonid)
+public OnPlayerPressButton(playerid, buttonid)
 {
     if (buttonid == SAGSLobbyBtn[0] || buttonid == SAGSLobbyBtn[1])
     {
@@ -1515,11 +1518,28 @@ CMD:note(playerid, params[])
 
     SendClientMessageEx(playerid, 0xA6D49F, "Admin %s >> Create note %s berhasil", pData[playerid][pAdminname], params);
     format(string, sizeof(string), "%s", params);
-    format(note1, sizeof(note1), "***Note***\n```%s```", params);
+    format(note1, sizeof(note1), "***Note***\n> %s", params);
     new DCC_Embed:note;
     note = DCC_CreateEmbed("JATENG PRIDE ROLEPLAY", "Note", "", "", 0x00FF00, "Join us @JPRP.xyz", "", "", "");
     DCC_AddEmbedField(note, "Note", string);
     DCC_SendChannelEmbedMessage(g_discord_note, note);
     DCC_SendChannelMessage(g_discord_note, note1);
+    return 1;
+}
+
+CMD:tmtd(playerid, params[])
+{
+    PlayerTextDrawShow(playerid, FiveM1[playerid]);
+    // SetTimerEx("HideTD", 3000, false, "d", playerid);
+    PlayerTextDrawShow(playerid, FiveM2[playerid]);
+    PlayerTextDrawShow(playerid, FiveM3[playerid]);
+    PlayerTextDrawShow(playerid, FiveM4[playerid]);
+    PlayerTextDrawShow(playerid, FiveM5[playerid]);
+    return 1;
+}
+
+function HideTD(playerid)
+{
+    PlayerTextDrawHide(playerid, FiveM1[playerid]);
     return 1;
 }

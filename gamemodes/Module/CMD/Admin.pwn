@@ -15,6 +15,9 @@ CMD:aduty(playerid, params[])
             pData[playerid][pAdminDuty] = 1;
             SetPlayerName(playerid, pData[playerid][pAdminname]);
             SendStaffMessage(COLOR_RIKO, "{FF0000}%s {FFFFFF} %s has "RED_E"Onduty {FFFFFF} Admins", GetStaffRank(playerid), pData[playerid][pAdminname]);
+            new log[300];
+            format(log, sizeof(log), "***ADMIN LOG***\n> Player %s On Duty admin %s", pData[playerid][pName], pData[playerid][pAdminname]);
+            DCC_SendChannelMessage(g_discord_logServer, log);
         }
         else
         {
@@ -193,6 +196,9 @@ CMD:jail(playerid, params[])
         SendClientMessageToAllEx(COLOR_BAN, "Reason: %s", reason);
         format(string, sizeof(string), ">>>JAIL: Admin: %s telah menjail player: %s selama %d menit. REASON: %s >>>", pData[playerid][pAdminname], pData[otherid][pName], timeSec);
         print(string);
+        new log[300];
+        format(log, sizeof(log), "> %s", string);
+        DCC_SendChannelMessage(g_discord_logServer, log);
     }
     return 1;
 }
@@ -496,15 +502,16 @@ CMD:setgold(playerid, params[])
     return 1;
 }
 
-CMD:cord(playerid, params[])
+CMD:checkpos(playerid, params[])
 {
-    new int, Float:px, Float:py, Float:pz, Float:a;
+    new int, Float:px, Float:py, Float:pz, Float:a, world;
     GetPlayerPos(playerid, px, py, pz);
     GetPlayerFacingAngle(playerid, a);
     int = GetPlayerInterior(playerid);
+    world = GetPlayerVirtualWorld(playerid);
     new zone [MAX_ZONE_NAME];
     GetPlayer3DZone(playerid, zone, sizeof(zone));
-    SendClientMessageEx(playerid, COLOR_WHITE, "Lokasi Anda Saat ini: %s (%0.2f, %0.2f, %0.2f, %0.2f) int = %d", zone, px, py, pz, a, int);
+    SendClientMessageEx(playerid, COLOR_WHITE, "{FA8072}Lokasi Anda Saat ini: %s (%0.2f, %0.2f, %0.2f, %0.2f) int = %d | world = %d", zone, px, py, pz, a, int, world);
     return 1;
 }
 
@@ -581,6 +588,7 @@ CMD:ahelp(playerid, params[])
     format(str, sizeof(str), "%s{25CED1}setvip\t Set Player VIP\n", str);
     format(str, sizeof(str), "%s{FA8334}createlocker\tCreate dynamic locker\n", str);
     format(str, sizeof(str), "%s{FA8334}gotolocker\tTeleport to locker\n", str);
+    format(str, sizeof(str), "%s{FA8334}editlocker\tEdit locker system\n", str);
     ShowPlayerDialog(playerid, DIALOG_UNUSED, DIALOG_STYLE_TABLIST_HEADERS, "ADMIN COMMAND", str, "Ok", "Exit");
 
     return 1;

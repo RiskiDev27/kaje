@@ -1,0 +1,38 @@
+
+
+
+
+
+
+
+
+
+Changelog v.1.4.3 Vehicle
+
+[bug] 
+=> button not move => percobaan
+=> revisi mappingan => OK
+=> revisi stats ==> BUG
+=> infotd not hide ==> OK
+=> revisi weatherid id 7 to name hujan ==> OK.
+-===========================================
+
+[bug]
+- native displaystats => TESTING = OK
+- button sags system ==> Testing = OK
+- add function manualengine ==> TESTING = 0k
+- -===========================================
+
+[bug - update]
+
+- weatherid 2 to rename sangat cerah => [OK]
+- Penambahan Dialog lockers sags => [BUG]
+- Penambahan fitur hood => [OK]
+- Penambahan CMD lockerid => [BUG]
+--===========================================
+
+[bug - update]
+- pembetulan dialog locker => [TEST]
+- pembetulan CMD lockerid => [TEST]
+- Penambahan Feature trunk => [TEST]
+-

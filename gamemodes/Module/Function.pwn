@@ -489,3 +489,15 @@ function SetVehicleToUnfreeze(playerid, vehicleid, Float:x, Float:y, Float:z, Fl
     TogglePlayerControllable(playerid, 1);
     return 1;
 }
+
+function SAGSLobbyDoorClose()
+{
+    MoveDynamicObject(SAGSLobbyDoor, 1389.375000, -25.387500, 999.978210, 3);
+    return 1;
+}
+
+function InfoTD_Hide(playerid)
+{
+    SetPVarInt(playerid, "InfoTDshown", -1);
+    PlayerTextDrawHide(playerid, InfoTD[playerid]);
+}
